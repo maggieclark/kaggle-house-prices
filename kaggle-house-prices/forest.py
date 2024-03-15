@@ -14,7 +14,7 @@ fold1, fold2, fold3, fold4, fold5 = kf.split(X)
 folds = [fold1, fold2, fold3, fold4, fold5]
 
 # set up model
-regr = RandomForestRegressor(max_depth=10, random_state=117)
+regr = RandomForestRegressor(random_state=117)
 error = []
 
 # cross val loop
