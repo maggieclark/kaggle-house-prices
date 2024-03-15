@@ -6,8 +6,9 @@ from sklearn.model_selection import KFold
 
 # set up data
 data = pd.read_csv('train.csv')
-X = data.drop(columns='SalePrice')
-y = data['SalePrice']
+numeric = data.select_dtypes(include=np.number).drop(columns='Id')
+X = numeric.drop(columns='SalePrice')
+y = numeric['SalePrice']
 kf = KFold(n_splits=5, shuffle=True, random_state=117)
 fold1, fold2, fold3, fold4, fold5 = kf.split(X)
 folds = [fold1, fold2, fold3, fold4, fold5]
@@ -17,7 +18,7 @@ regr = RandomForestRegressor(max_depth=2, random_state=117)
 error = []
 
 # cross val loop
-for i in range(1):
+for i in range(5):
 
     fold = folds[i]
 
@@ -32,4 +33,4 @@ for i in range(1):
 
     # evaluate
     y_hat = regr.predict(X_val)
-    error[i] = np.sqrt(np.mean((np.log(y_hat)-np.log(y_val))**2))
+    error.append(np.sqrt(np.mean((np.log(y_hat)-np.log(y_val))**2)))
