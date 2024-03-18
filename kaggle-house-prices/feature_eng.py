@@ -54,3 +54,6 @@ data_eng['YearBuilt'] = data_eng['YearBuilt'].mask(data_eng['YearBuilt'] < 1900,
 data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1900) & (data_eng['YearBuilt'] < 1925), 1924)
 data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1925) & (data_eng['YearBuilt'] < 1950), 1949)
 data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1950) & (data_eng['YearBuilt'] < 1975), 1974)
+
+data_eng['YearRemodAdd'] = data_eng['YearRemodAdd'].mask(data_eng['YearBuilt'] < 1975, 1974)
+
