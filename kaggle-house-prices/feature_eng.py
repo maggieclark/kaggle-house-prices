@@ -4,6 +4,8 @@ pd.set_option('future.no_silent_downcasting', True)
 
 import numpy as np
 
+## code categorical as ordinal where possible ##
+
 # read data
 data = pd.read_csv('train.csv')
 
@@ -90,3 +92,11 @@ data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns',
 
 # write
 data_num.to_csv('train_num.csv')
+
+## select and engineer continuous ##
+
+# replace neighborhood name with median income
+
+# replace quality measures with quality sum which will be somewhat continuous
+
+# select continuous variables
