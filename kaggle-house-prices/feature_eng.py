@@ -4,10 +4,13 @@ pd.set_option('future.no_silent_downcasting', True)
 
 import numpy as np
 
-# set up data
+# read data
 data = pd.read_csv('train.csv')
 
-# code ordinals
+# code ordinals - likert-style
+data_eng = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
+
+# code ordinals - individual columns
 data_eng = data.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gravel or paved
                                    'Pave': 1},
                          'LotShape': {'Reg': 0,
@@ -43,13 +46,37 @@ data_eng = data.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gravel
                                         '2.5Fin': 6,
                                         'SFoyer': np.nan,
                                         'SLevel': np.nan},
-                         'YearBuilt': {}
-
-
-
+                         'BsmtExposure': {'No': 0,
+                                          'Mn': 1,
+                                          'Av': 2,
+                                          'Gd': 3},
+                         'BsmtFinType1': {'Unf': 0,
+                                          'LwQ': 1,
+                                          'Rec': 2,
+                                          'BLQ': 3,
+                                          'ALQ': 4,
+                                          'GLQ': 5},
+                         'CentralAir': {'N': 0,
+                                        'Y': 1},
+                         'Electrical': {'SBrkr': 1,
+                                        'FuseA': 0,
+                                        'FuseF': -1,
+                                        'FuseP': -2,
+                                        'Mix': -1}, # setting Mix to same as Fair
+                         'Functional': {'Typ': 0,
+                                        'Min1': -1,
+                                        'Min2': -2,
+                                        'Mod': -3,
+                                        'Maj1': -4,
+                                        'Maj2': -5,
+                                        'Sev': -6,
+                                        'Sal': -7},
+                         'GarageFinish': {'Unf': 1,
+                                          'RFn': 2,
+                                          'Fin': 3}
                         })
 
-# code ordinals requiring conditions
+# code ordinals  - requiring conditions
 data_eng['YearBuilt'] = data_eng['YearBuilt'].mask(data_eng['YearBuilt'] < 1900, 1899) # earliest is 1972
 data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1900) & (data_eng['YearBuilt'] < 1925), 1924)
 data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1925) & (data_eng['YearBuilt'] < 1950), 1949)
@@ -57,3 +84,6 @@ data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 195
 
 data_eng['YearRemodAdd'] = data_eng['YearRemodAdd'].mask(data_eng['YearBuilt'] < 1975, 1974)
 
+# keep only numeric
+                # cast number strings to numeric
+numeric = data.select_dtypes(include=np.number).drop(columns='Id')
