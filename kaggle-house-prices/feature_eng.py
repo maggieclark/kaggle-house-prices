@@ -11,7 +11,7 @@ data = pd.read_csv('train.csv')
 data_eng = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
 
 # code ordinals - individual columns
-data_eng = data.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gravel or paved
+data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gravel or paved
                                    'Pave': 1},
                          'LotShape': {'Reg': 0,
                                       'IR1': 1,
@@ -84,6 +84,6 @@ data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 195
 
 data_eng['YearRemodAdd'] = data_eng['YearRemodAdd'].mask(data_eng['YearBuilt'] < 1975, 1974)
 
-# keep only numeric
-                # cast number strings to numeric
-numeric = data.select_dtypes(include=np.number).drop(columns='Id')
+
+# cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
+data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all').drop(columns='Id')
