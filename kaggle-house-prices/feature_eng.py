@@ -87,3 +87,6 @@ data_eng['YearRemodAdd'] = data_eng['YearRemodAdd'].mask(data_eng['YearBuilt'] <
 
 # cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
 data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all').drop(columns='Id')
+
+# write
+data_num.to_csv('train_num.csv')
