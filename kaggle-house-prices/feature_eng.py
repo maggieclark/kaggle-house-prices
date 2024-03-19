@@ -97,6 +97,9 @@ data_num.to_csv('train_num.csv')
 
 # replace quality measures with quality sum which will be somewhat continuous
 data_cont = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
+data_cont['Tot_qual_cond'] = pd.to_numeric(data_cont['ExterQual'] +
+                                           data_cont['ExterCond'] +
+                                           data_cont['HeatingQC'])
 
 
 # replace neighborhood name with median income
