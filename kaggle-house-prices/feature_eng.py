@@ -78,15 +78,6 @@ data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gr
                                           'Fin': 3}
                              })
 
-# code ordinals  - requiring conditions
-data_eng['YearBuilt'] = data_eng['YearBuilt'].mask(data_eng['YearBuilt'] < 1900, 1899) # earliest is 1972
-data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1900) & (data_eng['YearBuilt'] < 1925), 1924)
-data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1925) & (data_eng['YearBuilt'] < 1950), 1949)
-data_eng['YearBuilt'] = data_eng['YearBuilt'].mask((data_eng['YearBuilt'] >= 1950) & (data_eng['YearBuilt'] < 1975), 1974)
-
-data_eng['YearRemodAdd'] = data_eng['YearRemodAdd'].mask(data_eng['YearBuilt'] < 1975, 1974)
-
-
 # cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
 data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all').drop(columns='Id')
 
