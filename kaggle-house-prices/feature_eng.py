@@ -80,28 +80,25 @@ data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gr
 
 
 
-# replace quality measures with quality sum which will be somewhat continuous
-data_cont = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
-data_cont['Tot_qual_cond'] = pd.to_numeric(data_cont['ExterQual'] +
-                                           data_cont['ExterCond'] +
-                                           data_cont['BsmtCond'] +
-                                           data_cont['HeatingQC'] +
-                                           data_cont['KitchenQual'] +
-                                           data_cont['FireplaceQu'] +
-                                           data_cont['GarageQual'] +
-                                           data_cont['GarageCond'] +
-                                           data_cont['PoolQC'])
+# add quality sum which will be somewhat continuous
+data_eng['Tot_qual_cond'] = pd.to_numeric(data_eng['ExterQual'] +
+                                           data_eng['ExterCond'] +
+                                           data_eng['BsmtCond'] +
+                                           data_eng['HeatingQC'] +
+                                           data_eng['KitchenQual'] +
+                                           data_eng['FireplaceQu'] +
+                                           data_eng['GarageQual'] +
+                                           data_eng['GarageCond'] +
+                                           data_eng['PoolQC'])
 
 
 # replace neighborhood name with neighborhood center lat and long in decimal degrees
 hoods = pd.read_csv('neighborhood_coords.csv')
-
+data_eng = data_eng.set_index(['Neighborhood']).join(hoods.set_index(['neighborhood']))
+data_eng = data_eng.set_index(['Id'])
 
 # cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
-data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all').drop(columns='Id')
-
-
-
+data_eng = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all')
 
 # write
-data_num.to_csv('train_num.csv')
+data_eng.to_csv('train_num.csv')
