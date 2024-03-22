@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import KFold
+import xgboost as xgb
 
 # set up data
 data = pd.read_csv('train_num.csv')
@@ -14,7 +15,8 @@ fold1, fold2, fold3, fold4, fold5 = kf.split(X)
 folds = [fold1, fold2, fold3, fold4, fold5]
 
 # set up model
-regr = RandomForestRegressor(random_state=117)
+# regr = RandomForestRegressor(random_state=117)
+regr = xgb.XGBRegressor(tree_method="hist", device="cpu")
 error = []
 
 # cross val loop
