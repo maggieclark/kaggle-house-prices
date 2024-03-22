@@ -78,13 +78,7 @@ data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gr
                                           'Fin': 3}
                              })
 
-# cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
-data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all').drop(columns='Id')
 
-# write
-data_num.to_csv('train_num.csv')
-
-## select and engineer continuous ##
 
 # replace quality measures with quality sum which will be somewhat continuous
 data_cont = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
@@ -99,9 +93,15 @@ data_cont['Tot_qual_cond'] = pd.to_numeric(data_cont['ExterQual'] +
                                            data_cont['PoolQC'])
 
 
-# replace neighborhood name with median income
+# replace neighborhood name with neighborhood center lat and long in decimal degrees
+hoods = pd.read_csv('neighborhood_coords.csv')
 
 
-# select continuous variables
+# cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
+data_num = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all').drop(columns='Id')
 
 
+
+
+# write
+data_num.to_csv('train_num.csv')
