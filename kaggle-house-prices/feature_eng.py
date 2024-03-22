@@ -90,7 +90,13 @@ data_num.to_csv('train_num.csv')
 data_cont = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
 data_cont['Tot_qual_cond'] = pd.to_numeric(data_cont['ExterQual'] +
                                            data_cont['ExterCond'] +
-                                           data_cont['HeatingQC'])
+                                           data_cont['BsmtCond'] +
+                                           data_cont['HeatingQC'] +
+                                           data_cont['KitchenQual'] +
+                                           data_cont['FireplaceQu'] +
+                                           data_cont['GarageQual'] +
+                                           data_cont['GarageCond'] +
+                                           data_cont['PoolQC'])
 
 
 # replace neighborhood name with median income
