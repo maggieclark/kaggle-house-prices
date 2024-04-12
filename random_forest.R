@@ -1,5 +1,5 @@
 
-# set up
+### set up ###
 library(tidyverse)
 library(randomForest)
 
@@ -32,21 +32,38 @@ ttsplit = function(prepped_data, outcome_column){
 # read data
 data = read_csv('train_cleaned_option1.csv')
 
-# imputed medians
+### imputed medians ###
 model1data = data %>% 
   mutate(across(where(is.character), factor)) # convert categoricals to factors
 
 datasets = ttsplit(model1data, "SalePrice")
 
 # forest 1
-randomForest(na.roughfix(datasets[[1]]),
+rf1 = randomForest(na.roughfix(datasets[[1]]),
              datasets[[2]]$SalePrice,
              xtest = na.roughfix(datasets[[3]]),
              ytest = datasets[[4]]$SalePrice,
              ntree=100, 
              importance=T)
 
-# missing as factor level
+# RMSE of logs
+test_len = nrow(datasets[[4]])
+
+SSE = 0
+
+for (i in 1:test_len){
+  ith_SE = (log(rf1[['test']]$predicted[i]) - log(datasets[[4]]$SalePrice[i]))^2
+  SSE = SSE + ith_SE
+}
+
+sqrt(SSE/test_len)
+
+# importance
+
+varImpPlot(rf1)
+
+
+### missing as factor level ###
 model2data = data %>% 
   mutate(across(where(is.character), \(x) replace_na(x, "unknown"))) %>% 
   mutate(across(where(is.numeric), \(x) replace_na(x, -1)))
@@ -54,16 +71,29 @@ model2data = data %>%
 model2data = model2data %>% 
   mutate(across(where(is.character), factor)) # convert categoricals to factors
 
-datasets = ttsplit(model2data)
+datasets = ttsplit(model2data, "SalePrice")
 
 # forest
-rf = randomForest(datasets[[1]],
-                  datasets[[2]],
-                  xtest = datasets[[3]],
-                  ytest = datasets[[4]],
-                  ntree=100, 
-                  importance=T)
+rf2 = randomForest(datasets[[1]],
+             datasets[[2]]$SalePrice,
+             xtest = datasets[[3]],
+             ytest = datasets[[4]]$SalePrice,
+             ntree=100, 
+             importance=T)
+
+# RMSE of logs
+test_len = nrow(datasets[[4]])
+
+SSE = 0
+
+for (i in 1:test_len){
+  ith_SE = (log(rf2[['test']]$predicted[i]) - log(datasets[[4]]$SalePrice[i]))^2
+  SSE = SSE + ith_SE
+}
+
+sqrt(SSE/test_len)
+
 
 # importance plot
 
-varImpPlot(rf)
+varImpPlot()
