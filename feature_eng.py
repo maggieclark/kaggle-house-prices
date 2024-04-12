@@ -4,7 +4,7 @@ pd.set_option('future.no_silent_downcasting', True)
 
 import numpy as np
 
-## code categorical as ordinal where possible ##
+## code ordinal as integers where possible ##
 
 # read data
 data = pd.read_csv('train.csv')
@@ -13,9 +13,7 @@ data = pd.read_csv('train.csv')
 data_eng = data.replace(['Po', 'Fa', 'TA', 'Gd', 'Ex'], [-2, -1, 0, 1, 2])
 
 # code ordinals - individual columns
-data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gravel or paved
-                                   'Pave': 1},
-                             'LotShape': {'Reg': 0,
+data_eng = data_eng.replace({'LotShape': {'Reg': 0,
                                       'IR1': 1,
                                       'IR2': 2,
                                       'IR3': 3},
@@ -58,6 +56,12 @@ data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gr
                                           'BLQ': 3,
                                           'ALQ': 4,
                                           'GLQ': 5},
+                             'BsmtFinType2': {'Unf': 0,
+                                          'LwQ': 1,
+                                          'Rec': 2,
+                                          'BLQ': 3,
+                                          'ALQ': 4,
+                                          'GLQ': 5},
                              'CentralAir': {'N': 0,
                                         'Y': 1},
                              'Electrical': {'SBrkr': 1,
@@ -78,7 +82,23 @@ data_eng = data_eng.replace({'Alley': {'Grvl': 1, # Alley includes NaN if not gr
                                           'Fin': 3}
                              })
 
-
+# where missing data has a meaning, assign a value
+data_eng = data_eng.fillna({'Alley': 'None',
+                 'BsmtQual': -1, # same as "fair" height
+                 'BsmtCond': 0, # same as "typical" condition
+                 'BsmtExposure': -1, # less than "no exposure"
+                 'BsmtFinType1': 0, # same as "unfinished",
+                 'BsmtFinType2': 0,
+                 'FireplaceQu': -2, # same as poor quality
+                 'GarageType': 'None',
+                 'GarageFinish': 0, # less than 'unfinished'
+                 'GarageQual': -2, # same as poor quality
+                 'GarageCond': -2, # same as poor condition
+                 'PoolQC': -1, # same as 'fair'
+                 'Fence': 'None',
+                 'MiscFeature': 'None',
+                 'MiscVal': 0
+                 })
 
 # add quality sum which will be somewhat continuous
 data_eng['Tot_qual_cond'] = pd.to_numeric(data_eng['ExterQual'] +
@@ -91,11 +111,10 @@ data_eng['Tot_qual_cond'] = pd.to_numeric(data_eng['ExterQual'] +
                                            data_eng['GarageCond'] +
                                            data_eng['PoolQC'])
 
-
-# replace neighborhood name with neighborhood center lat and long in decimal degrees
+# insert neighborhood center lat and long in decimal degrees
 hoods = pd.read_csv('neighborhood_coords.csv')
-data_eng = data_eng.set_index(['Neighborhood']).join(hoods.set_index(['neighborhood']))
-data_eng = data_eng.set_index(['Id'])
+data_eng = data_eng.merge(hoods, how='left', left_on='Neighborhood', right_on='neighborhood')
+data_eng = data_eng.drop(columns='neighborhood')
 
 # write with all variables still present
 data_eng.to_csv('train_cleaned_option1.csv')
