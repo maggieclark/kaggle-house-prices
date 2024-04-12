@@ -97,6 +97,9 @@ hoods = pd.read_csv('neighborhood_coords.csv')
 data_eng = data_eng.set_index(['Neighborhood']).join(hoods.set_index(['neighborhood']))
 data_eng = data_eng.set_index(['Id'])
 
+# write with all variables still present
+data_eng.to_csv('train_cleaned_option1.csv')
+
 # cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
 data_eng = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all')
 
