@@ -16,12 +16,14 @@ ttsplit = function(prepped_data, outcome_column){
   Xtrain = train %>% 
     select(!outcome_column)
   
-  ytrain = train$outcome_column
+  ytrain = train %>% 
+    select(outcome_column)
   
   Xtest = test %>% 
     select(!outcome_column)
   
-  ytest = test$outcome_column
+  ytest = test %>% 
+    select(outcome_column)
   
   return(list(Xtrain, ytrain, Xtest, ytest))
 }
@@ -38,9 +40,9 @@ datasets = ttsplit(model1data, "SalePrice")
 
 # forest 1
 randomForest(na.roughfix(datasets[[1]]),
-             datasets[[2]],
+             datasets[[2]]$SalePrice,
              xtest = na.roughfix(datasets[[3]]),
-             ytest = datasets[[4]],
+             ytest = datasets[[4]]$SalePrice,
              ntree=100, 
              importance=T)
 
@@ -62,6 +64,6 @@ rf = randomForest(datasets[[1]],
                   ntree=100, 
                   importance=T)
 
-### importance plot ###
+# importance plot
 
 varImpPlot(rf)
