@@ -30,7 +30,7 @@ ttsplit = function(prepped_data, outcome_column){
 
 
 # read data
-data = read_csv('train_cleaned_option1.csv')
+data = read_csv('train_cleaned_minimal.csv')
 
 ### imputed medians ###
 model1data = data %>% 
@@ -78,7 +78,7 @@ rf2 = randomForest(datasets[[1]],
              datasets[[2]]$SalePrice,
              xtest = datasets[[3]],
              ytest = datasets[[4]]$SalePrice,
-             ntree=100, 
+             ntree=500, 
              importance=T)
 
 # RMSE of logs
