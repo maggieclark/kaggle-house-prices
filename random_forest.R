@@ -3,7 +3,7 @@
 library(tidyverse)
 library(randomForest)
 
-# setwd('C:/Users/clark/Downloads')
+setwd('C:/Users/clark/Documents/GitHub/kaggle-house-prices')
 
 
 # define functions
