@@ -116,11 +116,11 @@ hoods = pd.read_csv('neighborhood_coords.csv')
 data_eng = data_eng.merge(hoods, how='left', left_on='Neighborhood', right_on='neighborhood')
 data_eng = data_eng.drop(columns='neighborhood')
 
-# write with all variables still present
+# write
 data_eng.to_csv('train_cleaned_option1.csv')
 
 # cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
 data_eng = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all')
 
-# write
+# write all numeric dataframe
 data_eng.to_csv('train_num.csv')
