@@ -116,6 +116,15 @@ hoods = pd.read_csv('neighborhood_coords.csv')
 data_eng = data_eng.merge(hoods, how='left', left_on='Neighborhood', right_on='neighborhood')
 data_eng = data_eng.drop(columns='neighborhood')
 
+# nhood median price
+nhood_medians = data.groupby(["Neighborhood"])["SalePrice"].median()
+nhood_medians_df = nhood_medians.to_frame()
+nhood_medians_df['Neighborhood'] = nhood_medians_df.index
+nhood_medians_df = nhood_medians_df.reset_index(drop=True)
+data_eng = data_eng.merge(nhood_medians_df, how='left', on='Neighborhood')
+data_eng['nhood_median_price'] = data_eng['SalePrice_y']
+data_eng.drop(columns='SalePrice_y')
+
 # create interaction variables regarding total size
 data_eng['living_SF'] = data_eng['GrLivArea'] + data_eng['BsmtFinSF1']
 data_eng['liv_plus_grg_SF'] = data_eng['GrLivArea'] + data_eng['BsmtFinSF1'] + data_eng['GarageArea']
@@ -126,6 +135,10 @@ data_eng['qXGrLivArea'] = data_eng['OverallQual'] + data_eng['GrLivArea']
 data_eng['qXliving_SF'] = data_eng['OverallQual'] * data_eng['living_SF']
 data_eng['qXliv_plus_grg_SF'] = data_eng['OverallQual'] * data_eng['liv_plus_grg_SF']
 data_eng['qXtotal_indoor_SF'] = data_eng['OverallQual'] * data_eng['total_indoor_SF']
+
+# neighborhood size/quality interactions
+data_eng['degN_q_indoorSF'] = data_eng['degrees_north'] * data_eng['qXtotal_indoor_SF']
+data_eng['nhood_']
 
 # write
 data_eng.to_csv('train_cleaned_option2.csv')
