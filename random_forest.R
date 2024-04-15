@@ -298,6 +298,8 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
   metrics = append(metrics, sqrt(SSE/test_len))
 }
 
+rf1
+
 # mean: 0.1475555
 mean(metrics)
 
@@ -343,6 +345,8 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
   
   metrics = append(metrics, sqrt(SSE/test_len))
 }
+
+rf2
 
 # mean: 0.1480007
 mean(metrics)
