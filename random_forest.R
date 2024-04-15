@@ -300,7 +300,7 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
 
 metrics
 
-# mean of imputed medians with feature eng data: 0.1641935
+# mean of imputed medians with feature eng data: 0.1529816
 mean(metrics)
 
 # importance
@@ -348,7 +348,7 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
 
 metrics
 
-# mean of missing as factor level with feature engineered data: 0.1629938
+# mean of missing as factor level with feature engineered data: 0.1516034
 mean(metrics)
 
 # importance plot
