@@ -138,7 +138,9 @@ data_eng['qXtotal_indoor_SF'] = data_eng['OverallQual'] * data_eng['total_indoor
 
 # neighborhood size/quality interactions
 data_eng['degN_q_indoorSF'] = data_eng['degrees_north'] * data_eng['qXtotal_indoor_SF']
-data_eng['nhood_']
+data_eng['nhood_q_indoorSF'] = data_eng['nhood_median_price'] * data_eng['qXtotal_indoor_SF']
+data_eng['nhood_size'] = data_eng['nhood_median_price'] * data_eng['total_indoor_SF']
+data_eng['nhood_qual'] = data_eng['nhood_median_price'] * data_eng['OverallQual']
 
 # write
 data_eng.to_csv('train_cleaned_option2.csv')
