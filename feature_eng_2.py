@@ -128,10 +128,4 @@ data_eng['qXliv_plus_grg_SF'] = data_eng['OverallQual'] * data_eng['liv_plus_grg
 data_eng['qXtotal_indoor_SF'] = data_eng['OverallQual'] * data_eng['total_indoor_SF']
 
 # write
-data_eng.to_csv('train_cleaned_option1.csv')
-
-# cast dataframe to numeric, drop columns that were not coded as ordinals and now are all NaN, drop Id
-data_eng = data_eng.apply(pd.to_numeric, errors='coerce').dropna(axis='columns', how='all')
-
-# write all numeric dataframe
-data_eng.to_csv('train_num.csv')
+data_eng.to_csv('train_cleaned_option2.csv')
