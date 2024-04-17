@@ -416,13 +416,14 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
 
 mean(metrics) # 0.1486434
 
-###################### train best model on all data ###########################
+###################### train and predict ###########################
 
-# read data
+# read option2 data
 data = read_csv('train_cleaned_option2.csv') %>% 
   select(!c('...1', 'Id'))
 
-# imputed medians
+# train on all data
+# imputed medians, 500 trees, nodesize=9
 model1data = data %>% 
   mutate(across(where(is.character), factor)) # convert categoricals to factors
 
@@ -437,6 +438,61 @@ best_rf = randomForest(na.roughfix(Xtrain),
 
 best_rf
 
+# generate y_hat
 
+test_cleaned = read_csv('test_cleaned.csv') %>% 
+  select(!c('...1', 'Id'))
 
+test_factors = test_cleaned %>% 
+  mutate(across(where(is.character), factor)) # convert categoricals to factors
 
+# modify factor levels to match model1data
+# Utilities
+table(model1data$Utilities)
+table(test_factors$Utilities)
+test_factors$Utilities = fct_expand(test_factors$Utilities, "NoSeWa")
+
+# HouseStyle
+table(model1data$HouseStyle)
+table(test_factors$HouseStyle)
+test_factors$HouseStyle = fct_expand(test_factors$HouseStyle, "6")
+
+# RoofMatl
+table(model1data$RoofMatl)
+table(test_factors$RoofMatl)
+test_factors$RoofMatl = fct_expand(test_factors$RoofMatl,
+                                   "ClyTile",
+                                   'Membran',
+                                   'Metal',
+                                   'Roll')
+
+# Exterior1st
+table(model1data$Exterior1st)
+table(test_factors$Exterior1st)
+test_factors$Exterior1st = fct_expand(test_factors$Exterior1st, "ImStucc", 'Stone')
+
+# Exterior2nd
+table(model1data$Exterior2nd)
+table(test_factors$Exterior2nd)
+test_factors$Exterior2nd = fct_expand(test_factors$Exterior2nd, "Other")
+
+# Heating
+table(model1data$Heating)
+table(test_factors$Heating)
+test_factors$Heating = fct_expand(test_factors$Heating, "Floor", 'OthW')
+
+# MiscFeature
+table(model1data$MiscFeature)
+table(test_factors$MiscFeature)
+test_factors$MiscFeature = fct_expand(test_factors$MiscFeature, 'TenC')
+
+# predict
+yhat = predict(best_rf, newdata=na.roughfix(test_factors))
+
+# format
+ids = read_csv('test_cleaned.csv') %>% 
+  select('Id')
+
+submission = cbind(ids, SalePrice = yhat)
+
+write_csv(submission, 'mc_submission.csv')
