@@ -2,8 +2,6 @@
 import pandas as pd
 pd.set_option('future.no_silent_downcasting', True)
 
-import numpy as np
-
 ## code ordinal as integers where possible ##
 
 # read data
@@ -122,9 +120,8 @@ nhood_medians_df = nhood_medians.to_frame()
 nhood_medians_df['Neighborhood'] = nhood_medians_df.index
 nhood_medians_df = nhood_medians_df.reset_index(drop=True)
 data_eng = data_eng.merge(nhood_medians_df, how='left', on='Neighborhood')
-data_eng['SalePrice'] = data_eng['SalePrice_x']
-data_eng['nhood_median_price'] = data_eng['SalePrice_y']
-data_eng = data_eng.drop(columns=['SalePrice_x', 'SalePrice_y'])
+data_eng = data_eng.rename(columns={"SalePrice_x": "SalePrice",
+                                    'SalePrice_y': 'nhood_median_price'})
 
 # create interaction variables regarding total size
 data_eng['living_SF'] = data_eng['GrLivArea'] + data_eng['BsmtFinSF1']
