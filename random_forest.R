@@ -341,7 +341,6 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
                      xtest = na.roughfix(datasets[[3]]),
                      ytest = datasets[[4]]$SalePrice,
                      ntree=500, 
-                     importance=T,
                      nodesize=9)
   print('forest created')
   
@@ -364,6 +363,8 @@ rf1
 
 # mean replace=F: 0.147838
 # mean nodesize=9: 0.1474749
+# importance=F: 0.1475617
+# 
 
 # mean to beat: 0.1475555
 
