@@ -362,12 +362,13 @@ mean(metrics)
 rf1
 
 # mean replace=F: 0.147838
-# mean nodesize=9: 0.1474749
 # importance=F: 0.1475617
-# 
+# localImp=T:0.1475551
+# corr.bias=T: 0.1475968
+# 400 trees: 0.1476046
+# 600 trees: 0.1476241
 
-# mean to beat: 0.1475555
-
+# mean nodesize=9: 0.1474749
 
 
 
