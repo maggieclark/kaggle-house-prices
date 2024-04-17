@@ -1,3 +1,4 @@
+
 import pandas as pd
 pd.set_option('future.no_silent_downcasting', True)
 
@@ -81,6 +82,35 @@ data_eng = data_eng.replace({'LotShape': {'Reg': 0,
                                           'Fin': 3}
                              })
 
+# where missing data has a meaning, assign a value
+data_eng = data_eng.fillna({'Alley': 'None',
+                 'BsmtQual': -1, # same as "fair" height
+                 'BsmtCond': 0, # same as "typical" condition
+                 'BsmtExposure': -1, # less than "no exposure"
+                 'BsmtFinType1': 0, # same as "unfinished",
+                 'BsmtFinType2': 0,
+                 'FireplaceQu': -2, # same as poor quality
+                 'GarageType': 'None',
+                 'GarageFinish': 0, # less than 'unfinished'
+                 'GarageQual': -2, # same as poor quality
+                 'GarageCond': -2, # same as poor condition
+                 'PoolQC': -1, # same as 'fair'
+                 'Fence': 'None',
+                 'MiscFeature': 'None',
+                 'MiscVal': 0
+                 })
+
+# add quality sum which will be somewhat continuous
+data_eng['Tot_qual_cond'] = pd.to_numeric(data_eng['ExterQual'] +
+                                           data_eng['ExterCond'] +
+                                           data_eng['BsmtCond'] +
+                                           data_eng['HeatingQC'] +
+                                           data_eng['KitchenQual'] +
+                                           data_eng['FireplaceQu'] +
+                                           data_eng['GarageQual'] +
+                                           data_eng['GarageCond'] +
+                                           data_eng['PoolQC'])
+
 # insert neighborhood center lat and long in decimal degrees
 hoods = pd.read_csv('neighborhood_coords.csv')
 data_eng = data_eng.merge(hoods, how='left', left_on='Neighborhood', right_on='neighborhood')
@@ -120,39 +150,6 @@ data_eng['outdoor_space'] = data_eng['porch_total'] * data_eng['LotArea']
 data_eng['total_space'] = data_eng['total_indoor_SF'] * data_eng['LotArea']
 data_eng['built_space'] = data_eng['total_indoor_SF'] + data_eng['porch_total']
 data_eng['outdoorXnhood'] = data_eng['outdoor_space'] * data_eng['nhood_median_price']
-
-
-
-# different missings treatment
-# where missing data has a meaning, assign a value
-data_eng = data_eng.fillna({'Alley': 'None',
-#                 'BsmtQual': -1, # same as "fair" height
-#                 'BsmtCond': 0, # same as "typical" condition
-#                 'BsmtExposure': -1, # less than "no exposure"
-#                 'BsmtFinType1': 0, # same as "unfinished",
-#                 'BsmtFinType2': 0,
-#                 'FireplaceQu': -2, # same as poor quality
-                 'GarageType': 'None',
-#                 'GarageFinish': 0, # less than 'unfinished'
-#                 'GarageQual': -2, # same as poor quality
-#                 'GarageCond': -2, # same as poor condition
-#                 'PoolQC': -1, # same as 'fair'
-                 'Fence': 'None',
-                 'MiscFeature': 'None',
-                 'MiscVal': 0
-                 })
-
-data_eng = data_eng.drop(columns='PoolQC')
-
-# add quality sum which will be somewhat continuous
-data_eng['Tot_qual_cond'] = pd.to_numeric(data_eng['ExterQual'] +
-                                           data_eng['ExterCond'] +
-                                           data_eng['BsmtCond'] +
-                                           data_eng['HeatingQC'] +
-                                           data_eng['KitchenQual'] +
-                                           data_eng['FireplaceQu'] +
-                                           data_eng['GarageQual'] +
-                                           data_eng['GarageCond'])
 
 # write
 data_eng.to_csv('train_cleaned_option3.csv')
