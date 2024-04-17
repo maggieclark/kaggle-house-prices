@@ -370,7 +370,7 @@ rf1
 
 # mean nodesize=9: 0.1474749
 
-######### imputed medians, tuned parameters, outdoor features ###
+######### imputed medians, tuned parameters, outdoor features, missingness change ###
 
 # read data
 data = read_csv('train_cleaned_option3.csv') %>% 
@@ -414,9 +414,28 @@ for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
   metrics = append(metrics, sqrt(SSE/test_len))
 }
 
-mean(metrics) # 0.1487668
+mean(metrics) # 0.1486434
 
+###################### train best model on all data ###########################
 
+# read data
+data = read_csv('train_cleaned_option2.csv') %>% 
+  select(!c('...1', 'Id'))
+
+# imputed medians
+model1data = data %>% 
+  mutate(across(where(is.character), factor)) # convert categoricals to factors
+
+Xtrain = model1data %>% select(!SalePrice)
+ytrain = model1data %>% select(SalePrice)
+
+# train
+best_rf = randomForest(na.roughfix(Xtrain),
+                       ytrain$SalePrice,
+                       ntree=500,
+                       nodesize=9)
+
+best_rf
 
 
 
