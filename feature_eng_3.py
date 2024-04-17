@@ -142,7 +142,7 @@ data_eng = data_eng.fillna({'Alley': 'None',
                  'MiscVal': 0
                  })
 
-data_eng.drop(columns='PoolQC')
+data_eng = data_eng.drop(columns='PoolQC')
 
 # add quality sum which will be somewhat continuous
 data_eng['Tot_qual_cond'] = pd.to_numeric(data_eng['ExterQual'] +
