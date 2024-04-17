@@ -370,6 +370,54 @@ rf1
 
 # mean nodesize=9: 0.1474749
 
+######### imputed medians, tuned parameters, outdoor features ###
+
+# read data
+data = read_csv('train_cleaned_option3.csv') %>% 
+  select(!c('...1', 'Id'))
+
+# divide into 5 folds
+fold_assn <- sample(c('fold1', 'fold2', 'fold3', 'fold4', 'fold5'), nrow(data), replace=TRUE)
+data = cbind(data, fold_assn)
+
+
+### imputed medians ###
+model1data = data %>% 
+  mutate(across(where(is.character), factor)) # convert categoricals to factors
+
+metrics = c()
+
+for (f in c('fold1', 'fold2', 'fold3', 'fold4', 'fold5')){
+  print(f)
+  
+  datasets = fold_ttsplit(model1data, "SalePrice", f)
+  print('datasets created')
+  
+  rf1 = randomForest(na.roughfix(datasets[[1]]),
+                     datasets[[2]]$SalePrice,
+                     xtest = na.roughfix(datasets[[3]]),
+                     ytest = datasets[[4]]$SalePrice,
+                     ntree=500, 
+                     nodesize=9)
+  print('forest created')
+  
+  test_len = nrow(datasets[[4]])
+  
+  SSE = 0
+  
+  for (i in 1:test_len){
+    ith_SE = (log(rf1[['test']]$predicted[i]) - log(datasets[[4]]$SalePrice[i]))^2
+    SSE = SSE + ith_SE
+  }
+  print('error calculated')
+  
+  metrics = append(metrics, sqrt(SSE/test_len))
+}
+
+mean(metrics) # 0.1487668
+
+
+
 
 
 
