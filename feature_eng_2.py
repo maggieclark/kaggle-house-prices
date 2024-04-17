@@ -145,3 +145,33 @@ data_eng['nhoodXqual'] = data_eng['nhood_median_price'] * data_eng['OverallQual'
 
 # write
 data_eng.to_csv('train_cleaned_option2.csv')
+
+# external space
+data_eng['porch_total'] = (data_eng['WoodDeckSF'] + data_eng['OpenPorchSF'] + data_eng['EnclosedPorch'] +
+data_eng['3SsnPorch'] + data_eng['ScreenPorch'] + data_eng['PoolArea'])
+data_eng['outdoor_space'] = data_eng['porch_total'] * data_eng['LotArea']
+
+# write
+data_eng.to_csv('train_cleaned_option3.csv')
+
+# different missings treatment
+# where missing data has a meaning, assign a value
+data_eng = data_eng.fillna({'Alley': 'None',
+#                 'BsmtQual': -1, # same as "fair" height
+#                 'BsmtCond': 0, # same as "typical" condition
+#                 'BsmtExposure': -1, # less than "no exposure"
+#                 'BsmtFinType1': 0, # same as "unfinished",
+#                 'BsmtFinType2': 0,
+#                 'FireplaceQu': -2, # same as poor quality
+                 'GarageType': 'None',
+#                 'GarageFinish': 0, # less than 'unfinished'
+#                 'GarageQual': -2, # same as poor quality
+#                 'GarageCond': -2, # same as poor condition
+#                 'PoolQC': -1, # same as 'fair'
+                 'Fence': 'None',
+                 'MiscFeature': 'None',
+                 'MiscVal': 0
+                 })
+
+
+
